@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galeri Kenangan Kita</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cloudinary-core/2.13.0/cloudinary-core-shrinkwrap.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap');
         
@@ -115,6 +116,20 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #3b82f6;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
     </style>
 </head>
 <body class="bg-slate-50">
@@ -124,7 +139,8 @@
                 <h1 class="title-font text-4xl md:text-5xl font-bold text-slate-800 mb-2">
                     Kenangan Kita
                 </h1>
-                
+                <p class="text-slate-600">Simpan dan bagikan momen berharga bersama</p>
+    
             </div>
         </div>
     </header>
@@ -232,7 +248,16 @@
                 <div>
                     <label class="block text-slate-700 font-medium mb-2">Upload Foto / Video</label>
                     <input type="file" id="photoFile" accept="image/*,video/*" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="previewMedia(event)">
-                    <p class="text-xs text-slate-500 mt-1">Format: JPG, PNG, GIF, MP4, MOV, AVI (Max: 5MB)</p>
+                    <p class="text-xs text-slate-500 mt-1">Format: JPG, PNG, GIF, MP4, MOV, AVI (Max: 100MB)</p>
+                    <div id="uploadProgress" class="hidden mt-3">
+                        <div class="flex justify-between text-sm text-slate-600 mb-1">
+                            <span>Mengunggah...</span>
+                            <span id="progressPercent">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-2">
+                            <div id="progressBar" class="progress-bar h-2 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
                     <div id="mediaPreview" class="mt-3 rounded-lg border-2 border-dashed border-slate-300">
                         <p class="text-slate-400 text-sm">Preview akan muncul di sini</p>
                     </div>
@@ -255,78 +280,121 @@
         let currentTypeFilter = 'all';
         let currentPhotoId = null;
 
-        // Load all media from shared storage
-        async function loadAllMedia() {
-            try {
-                const result = await window.storage.list('media:', true);
-                if (!result || !result.keys) {
-                    return [];
-                }
-
-                const mediaPromises = result.keys.map(async (key) => {
-                    try {
-                        const data = await window.storage.get(key, true);
-                        if (data && data.value) {
-                            return JSON.parse(data.value);
-                        }
-                    } catch (e) {
-                        console.error('Error loading media:', key, e);
+        // Cloudinary Configuration - GANTI DENGAN DATA AKUN CLOUDINARY ANDA
+        const cloudName = 'dxcconkoi'; // Contoh: 'dcw5hvbjt'
+        const uploadPreset = 'galerikenangan'; // Contoh: 'ml_default'
+        const apiKey = '553731513136417'; // Contoh: '123456789012345'
+        const apiSecret = 'KiTI2UeawWd-BcvnRU0BE4uFXww'; // Hati-hati, jangan expose di frontend untuk production!
+        
+        // Untuk production, sebaiknya buat endpoint backend untuk upload
+        // Tapi untuk demo, kita bisa pakai unsigned upload dengan upload preset
+        
+        // Fungsi untuk upload ke Cloudinary
+        async function uploadToCloudinary(file) {
+            return new Promise((resolve, reject) => {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', uploadPreset);
+                formData.append('cloud_name', cloudName);
+                
+                // Tampilkan progress bar
+                document.getElementById('uploadProgress').classList.remove('hidden');
+                
+                const xhr = new XMLHttpRequest();
+                
+                // Track upload progress
+                xhr.upload.addEventListener('progress', (e) => {
+                    if (e.lengthComputable) {
+                        const percent = Math.round((e.loaded / e.total) * 100);
+                        document.getElementById('progressBar').style.width = percent + '%';
+                        document.getElementById('progressPercent').textContent = percent + '%';
                     }
-                    return null;
                 });
-
-                const mediaItems = await Promise.all(mediaPromises);
-                return mediaItems.filter(item => item !== null);
-            } catch (error) {
-                console.error('Error loading media list:', error);
-                return [];
-            }
-        }
-
-        // Save media to shared storage
-        async function saveMedia(media) {
-            try {
-                const key = `media:${media.id}`;
-                await window.storage.set(key, JSON.stringify(media), true);
-                return true;
-            } catch (error) {
-                console.error('Error saving media:', error);
-                return false;
-            }
-        }
-
-        // Delete media from shared storage
-        async function deleteMedia(id) {
-            try {
-                const key = `media:${id}`;
-                await window.storage.delete(key, true);
-                return true;
-            } catch (error) {
-                console.error('Error deleting media:', error);
-                return false;
-            }
-        }
-
-        // Generate unique ID
-        function generateId() {
-            return Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        }
-
-        async function initApp() {
-            try {
-                photos = await loadAllMedia();
-                photos.sort((a, b) => {
-                    const dateA = new Date(a.timestamp || 0);
-                    const dateB = new Date(b.timestamp || 0);
-                    return dateB - dateA;
+            
+                xhr.addEventListener('load', () => {
+                    document.getElementById('uploadProgress').classList.add('hidden');
+                    if (xhr.status === 200) {
+                        const response = JSON.parse(xhr.responseText);
+                        // Cloudinary mengembalikan URL dengan format berbeda
+                        // Kita ambil secure_url untuk HTTPS
+                        resolve(response.secure_url);
+                    } else {
+                        reject(new Error('Upload gagal'));
+                    }
                 });
+                
+                xhr.addEventListener('error', () => {
+                    document.getElementById('uploadProgress').classList.add('hidden');
+                    reject(new Error('Network error'));
+                });
+                
+                // Kirim ke Cloudinary
+                xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`);
+                xhr.send(formData);
+            });
+        }
+
+        // Fungsi untuk mendapatkan thumbnail dari video Cloudinary
+        function getVideoThumbnail(videoUrl) {
+            // Cloudinary bisa generate thumbnail dengan transformasi
+            // Ubah URL video menjadi URL thumbnail
+            if (videoUrl.includes('cloudinary.com')) {
+                return videoUrl.replace('/upload/', '/upload/w_600,h_400,c_fill,q_auto,f_auto/');
+            }
+            return videoUrl;
+        }
+
+        // Fungsi untuk menyimpan data ke URL hash
+        function saveToHash() {
+            // Hanya simpan metadata, tidak simpan file (karena sudah di Cloudinary)
+            const compressedPhotos = photos.map(photo => {
+                const { id, title, date, category, description, type, color, timestamp, cloudinaryUrl } = photo;
+                return { id, title, date, category, description, type, color, timestamp, cloudinaryUrl };
+            });
+            
+            const dataStr = JSON.stringify(compressedPhotos);
+            const encodedData = btoa(encodeURIComponent(dataStr));
+            window.location.hash = encodedData;
+        }
+
+        // Fungsi untuk memuat data dari URL hash
+        function loadFromHash() {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                try {
+                    const decodedData = decodeURIComponent(atob(hash));
+                    const loadedPhotos = JSON.parse(decodedData);
+                    
+                    // Restore photos dengan Cloudinary URL
+                    photos = loadedPhotos.map(photo => ({
+                        ...photo,
+                        image: photo.cloudinaryUrl || photo.image // Gunakan cloudinaryUrl jika ada
+                    }));
+                    
+                    return true;
+                } catch (e) {
+                    console.error('Error loading from hash:', e);
+                }
+            }
+            return false;
+        }
+
+        // Coba muat data dari URL saat pertama kali
+        function initApp() {
+            const loaded = loadFromHash();
+            
+            if (loaded && photos.length > 0) {
+                photos.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                renderGallery();
                 document.getElementById('loadingIndicator').classList.add('hidden');
                 document.getElementById('gallery').classList.remove('hidden');
-                renderGallery();
-            } catch (error) {
-                console.error('Error initializing app:', error);
-                document.getElementById('loadingIndicator').innerHTML = 
-                    '<p class="text-red-600">Gagal memuat data. Silakan refresh halaman.</p>';
+            } else {
+                // Contoh data awal
+                photos = [];
+                document.getElementById('loadingIndicator').classList.add('hidden');
+                if (photos.length === 0) {
+                    document.getElementById('emptyState').classList.remove('hidden');
+                }
             }
         }
 
@@ -351,19 +419,25 @@
 
             gallery.classList.remove('hidden');
             emptyState.classList.add('hidden');
+            
             gallery.innerHTML = filtered.map(photo => {
                 const colorClass = photo.color === 'yellow' ? 'bg-yellow-400' 
                     : photo.color === 'red' ? 'bg-red-500' 
                     : 'bg-blue-500';
                 
+                // Untuk video, gunakan thumbnail
+                const mediaUrl = photo.type === 'video' 
+                    ? getVideoThumbnail(photo.image) 
+                    : photo.image;
+                
                 const mediaDisplay = photo.type === 'video' 
-                    ? `<video src="${photo.image}" class="photo-img w-full h-full object-cover"></video>
+                    ? `<img src="${mediaUrl}" alt="${photo.title}" class="photo-img w-full h-full object-cover">
                        <div class="video-badge">
                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
                                <path d="M8 5v14l11-7z"/>
                            </svg>
                        </div>`
-                    : `<img src="${photo.image}" alt="${photo.title}" class="photo-img w-full h-full object-cover">`;
+                    : `<img src="${mediaUrl}" alt="${photo.title}" class="photo-img w-full h-full object-cover">`;
 
                 const typeIcon = photo.type === 'video' 
                     ? '<svg class="w-4 h-4 inline" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>' 
@@ -462,35 +536,40 @@
 
         function openUploadModal() {
             document.getElementById('uploadModal').classList.remove('hidden');
+            document.getElementById('photoDate').valueAsDate = new Date();
+            document.getElementById('uploadProgress').classList.add('hidden');
         }
 
         function closeUploadModal() {
             document.getElementById('uploadModal').classList.add('hidden');
             document.getElementById('mediaPreview').innerHTML = '<p class="text-slate-400 text-sm">Preview akan muncul di sini</p>';
+            document.getElementById('uploadProgress').classList.add('hidden');
+            document.querySelector('form').reset();
         }
 
         function previewMedia(event) {
             const file = event.target.files[0];
-            if (file) {
-                if (file.size > 5 * 1024 * 1024) {
-                    alert('Ukuran file terlalu besar! Maksimal 5MB');
-                    event.target.value = '';
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const isVideo = file.type.startsWith('video/');
-                    if (isVideo) {
-                        document.getElementById('mediaPreview').innerHTML = 
-                            `<video src="${e.target.result}" controls class="video-preview"></video>`;
-                    } else {
-                        document.getElementById('mediaPreview').innerHTML = 
-                            `<img src="${e.target.result}" class="image-preview">`;
-                    }
-                };
-                reader.readAsDataURL(file);
+            if (!file) return;
+            
+            if (file.size > 100 * 1024 * 1024) {
+                alert('Ukuran file terlalu besar! Maksimal 100MB');
+                event.target.value = '';
+                document.getElementById('mediaPreview').innerHTML = '<p class="text-slate-400 text-sm">Preview akan muncul di sini</p>';
+                return;
             }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const isVideo = file.type.startsWith('video/');
+                if (isVideo) {
+                    document.getElementById('mediaPreview').innerHTML = 
+                        `<video src="${e.target.result}" controls class="video-preview"></video>`;
+                } else {
+                    document.getElementById('mediaPreview').innerHTML = 
+                        `<img src="${e.target.result}" class="image-preview" alt="Preview">`;
+                }
+            };
+            reader.readAsDataURL(file);
         }
 
         async function addPhoto(e) {
@@ -498,72 +577,70 @@
             
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Menyimpan...';
+            submitBtn.textContent = 'Mengunggah...';
             
-            const file = document.getElementById('photoFile').files[0];
-            if (!file) {
-                alert('Silakan pilih foto atau video terlebih dahulu');
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Simpan';
-                return;
-            }
+            try {
+                const file = document.getElementById('photoFile').files[0];
+                if (!file) {
+                    alert('Silakan pilih foto atau video terlebih dahulu');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Simpan';
+                    return;
+                }
 
-            const reader = new FileReader();
-            reader.onload = async function(event) {
+                // Upload ke Cloudinary
+                const cloudinaryUrl = await uploadToCloudinary(file);
+                
                 const colors = ['yellow', 'red', 'blue'];
                 const isVideo = file.type.startsWith('video/');
                 
+                const dateValue = document.getElementById('photoDate').value;
+                const dateObj = new Date(dateValue);
+                
                 const newPhoto = {
-                    id: generateId(),
+                    id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
                     title: document.getElementById('photoTitle').value,
-                    date: new Date(document.getElementById('photoDate').value).toLocaleDateString('id-ID', {
+                    date: dateObj.toLocaleDateString('id-ID', {
                         day: 'numeric',
                         month: 'long',
                         year: 'numeric'
                     }),
                     category: document.getElementById('photoCategory').value,
-                    description: document.getElementById('photoDescription').value,
-                    image: event.target.result,
+                    description: document.getElementById('photoDescription').value || 'Tidak ada deskripsi',
+                    image: cloudinaryUrl,
+                    cloudinaryUrl: cloudinaryUrl, // Simpan juga di properti khusus
                     type: isVideo ? 'video' : 'image',
                     color: colors[Math.floor(Math.random() * colors.length)],
                     timestamp: Date.now()
                 };
                 
-                const success = await saveMedia(newPhoto);
+                photos.unshift(newPhoto);
+                saveToHash();
+                renderGallery();
+                closeUploadModal();
+                alert('Media berhasil disimpan di Cloudinary!');
                 
-                if (success) {
-                    photos.unshift(newPhoto);
-                    renderGallery();
-                    closeUploadModal();
-                    e.target.reset();
-                    document.getElementById('mediaPreview').innerHTML = '<p class="text-slate-400 text-sm">Preview akan muncul di sini</p>';
-                } else {
-                    alert('Gagal menyimpan media. Silakan coba lagi.');
-                }
-                
+            } catch (error) {
+                console.error('Error uploading:', error);
+                alert('Gagal mengunggah media ke Cloudinary. Silakan coba lagi.');
+            } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Simpan';
-            };
-            reader.readAsDataURL(file);
-        }
-
-        async function deletePhoto() {
-            if (!currentPhotoId) return;
-            
-            if (confirm('Apakah Anda yakin ingin menghapus media ini?')) {
-                const success = await deleteMedia(currentPhotoId);
-                
-                if (success) {
-                    photos = photos.filter(p => p.id !== currentPhotoId);
-                    closeModal();
-                    renderGallery();
-                } else {
-                    alert('Gagal menghapus media. Silakan coba lagi.');
-                }
             }
         }
 
-        initApp();
+        function deletePhoto() {
+            if (!currentPhotoId) return;
+            
+            if (confirm('Apakah Anda yakin ingin menghapus media ini?\n\nCatatan: Media hanya dihapus dari daftar, file tetap ada di Cloudinary.')) {
+                photos = photos.filter(p => p.id !== currentPhotoId);
+                saveToHash();
+                closeModal();
+                renderGallery();
+            }
+        }
+        // Inisialisasi aplikasi
+        window.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
