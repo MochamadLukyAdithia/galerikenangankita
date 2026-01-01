@@ -4,51 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galeri Kenangan Kita ❤️</title>
-    <!-- Tailwind CSS dari CDN (alternatif production: https://tailwindcss.com/docs/installation) -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Atau gunakan CDN alternatif untuk production: -->
-    <!-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <!-- Tambahkan Supabase JS -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+    <!-- Supabase JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #fdf2f8 0%, #f0f9ff 100%);
+            background: linear-gradient(135deg, #fff1f8 0%, #fce7f3 50%, #fef3c7 100%);
             min-height: 100vh;
+            color: #4c1d3b;
         }
         
         .title-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .cursive-font {
             font-family: 'Dancing Script', cursive;
         }
         
-        .heartbeat {
-            animation: heartbeat 1.5s ease-in-out infinite both;
-        }
-        
-        @keyframes heartbeat {
-            0% { transform: scale(1); }
-            5% { transform: scale(1.1); }
-            10% { transform: scale(1); }
-            15% { transform: scale(1.15); }
-            20% { transform: scale(1); }
-            100% { transform: scale(1); }
-        }
-        
         .photo-card {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+            border-radius: 24px;
             overflow: hidden;
+            box-shadow: 0 10px 40px rgba(236, 72, 153, 0.15);
             position: relative;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .photo-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
         
         .photo-card::before {
@@ -57,202 +44,310 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #fbcfe8 0%, #c7d2fe 50%, #bae6fd 100%);
-            z-index: 10;
+            height: 5px;
+            background: linear-gradient(90deg, #ec4899, #f472b6, #fbb6ce);
+            border-radius: 24px 24px 0 0;
+        }
+        
+        .photo-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(236, 72, 153, 0.25);
         }
         
         .love-btn {
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .love-btn.loved {
-            color: #f472b6;
-            transform: scale(1.2);
-        }
-        
-        .love-btn:hover {
-            transform: scale(1.1);
-        }
-        
-        .modal-overlay {
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-        }
-        
-        .category-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-        }
-        
-        .floating-heart {
-            position: absolute;
-            font-size: 24px;
-            color: #fbcfe8;
-            opacity: 0.2;
-            animation: float 20s linear infinite;
-            z-index: -1;
-        }
-        
-        @keyframes float {
-            0% { transform: translateY(100vh) translateX(0) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.2; }
-            90% { opacity: 0.2; }
-            100% { transform: translateY(-100px) translateX(100px) rotate(360deg); opacity: 0; }
-        }
-        
-        .loading-pulse {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            color: #ec4899;
+            filter: drop-shadow(0 0 12px rgba(236, 72, 153, 0.6));
+            animation: pulse 0.5s ease;
         }
         
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
         }
         
-        /* Soft colors untuk kategori */
-        .cb-bg { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); }
-        .ld-bg { background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); }
-        .nb-bg { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); }
+        .love-btn:hover {
+            transform: scale(1.3);
+        }
         
-        .cb-text { color: #92400e; }
-        .ld-text { color: #065f46; }
-        .nb-text { color: #1e40af; }
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+        }
         
-        /* Custom utilities untuk Tailwind */
-        .backdrop-blur-sm { backdrop-filter: blur(4px); }
-        .backdrop-blur-md { backdrop-filter: blur(8px); }
-        .backdrop-blur-lg { backdrop-filter: blur(16px); }
+        /* Warna kategori */
+        .cat-cb { 
+            background: linear-gradient(135deg, #fef3c7, #fde68a); 
+            color: #92400e;
+            border: 2px solid #fbbf24;
+        }
         
-        .bg-white\/90 { background-color: rgba(255, 255, 255, 0.9); }
-        .bg-white\/95 { background-color: rgba(255, 255, 255, 0.95); }
-        .bg-slate-100\/80 { background-color: rgba(241, 245, 249, 0.8); }
-        .bg-slate-200\/80 { background-color: rgba(226, 232, 240, 0.8); }
+        .cat-ld { 
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0); 
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+        
+        .cat-nb { 
+            background: linear-gradient(135deg, #dbeafe, #93c5fd); 
+            color: #1e40af;
+            border: 2px solid #3b82f6;
+        }
+        
+        .cat-cb-active { 
+            background: linear-gradient(135deg, #f59e0b, #fbbf24) !important; 
+            color: white !important;
+            border-color: #f59e0b !important;
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
+        }
+        
+        .cat-ld-active { 
+            background: linear-gradient(135deg, #10b981, #34d399) !important; 
+            color: white !important;
+            border-color: #10b981 !important;
+            transform: scale(1.05);
+         
+        }
+        
+        .cat-nb-active { 
+            background: linear-gradient(135deg, #3b82f6, #60a5fa) !important; 
+            color: white !important;
+            border-color: #3b82f6 !important;
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        .filter-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+       
+        .type-btn {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .type-btn.active {
+            background: linear-gradient(135deg, #ec4899, #f472b6) !important;
+            color: white !important;
+            border-color: #ec4899 !important;
+            box-shadow: 0 8px 20px rgba(236, 72, 153, 0.25);
+        }
+        
+        .floating-btn {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .heart-beat {
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #ec4899, #f472b6, #fbb6ce, #fef3c7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .card-image {
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .photo-card:hover .card-image {
+            transform: scale(1.1);
+        }
+        
+        /* Responsive grid adjustments */
+        @media (max-width: 640px) {
+            .photo-card {
+                border-radius: 20px;
+            }
+        }
+        
+        /* Loading animation */
+        .loading-dots {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .loading-dots span {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ec4899, #f472b6);
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
     </style>
 </head>
 <body class="min-h-screen">
-    <!-- Background floating hearts -->
-    <div id="floatingHearts"></div>
-    
-    <header class="sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div class="text-center bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
-                <h1 class="title-font text-5xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-300 via-purple-300 to-blue-300 mb-4">
-                    Kenangan Kita ❤️
-                </h1>
-                <p class="text-slate-500 text-lg mb-6">Simpan momen berharga bersama yang penuh cinta</p>
+    <!-- Floating hearts background -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div class="absolute top-1/4 left-10 text-4xl text-pink-200 opacity-20 animate-pulse">❤️</div>
+        <div class="absolute top-1/3 right-20 text-3xl text-rose-200 opacity-30 animate-pulse">💖</div>
+        <div class="absolute bottom-1/4 left-20 text-5xl text-pink-300 opacity-25 animate-pulse">💕</div>
+        <div class="absolute top-20 right-1/4 text-6xl text-rose-300 opacity-20 animate-pulse">✨</div>
+    </div>
+
+    <header class="pt-8 sm:pt-12 pb-12 sm:pb-16 relative z-10">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+            <div class="text-center bg-white/90 backdrop-blur-lg rounded-3xl p-6 sm:p-10 shadow-2xl border border-pink-100 relative overflow-hidden">
+                <!-- Decorative elements -->
+                <div class="absolute -top-6 -left-6 w-24 h-24 bg-pink-200 rounded-full opacity-20"></div>
+                <div class="absolute -bottom-8 -right-8 w-32 h-32 bg-rose-200 rounded-full opacity-20"></div>
                 
-                <div class="flex flex-wrap gap-3 justify-center items-center">
-                    <div class="text-sm text-slate-500 bg-slate-100/80 px-4 py-2 rounded-full">
-                        <i class="fas fa-heart text-pink-300 mr-2"></i>
-                        <span id="totalLikes">0</span> Love • 
-                        <span id="totalPhotos">0</span> Media
+                <div class="relative z-10">
+                    <h1 class="title-font text-4xl sm:text-6xl md:text-7xl font-bold gradient-text mb-4 sm:mb-6">
+                        Kenangan Kita
+                    </h1>
+                    <p class="cursive-font text-2xl sm:text-3xl text-pink-700 mb-6">Momen berharga yang tak akan pernah terlupakan ✨</p>
+                    
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mt-8">
+                        <div class="bg-white/80 backdrop-blur-sm px-6 py-4 rounded-2xl text-base sm:text-lg font-medium border-2 border-pink-200 shadow-lg">
+                            <i class="fas fa-heart text-pink-600 mr-3 heart-beat"></i>
+                            <span id="totalLikes" class="text-pink-700 font-bold">0</span> Love • 
+                            <span id="totalPhotos" class="text-pink-700 font-bold">0</span> Kenangan
+                        </div>
+                     
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-        <div class="flex flex-wrap gap-3 justify-center mb-6">
-            <button onclick="filterPhotos('all')" class="filter-btn px-6 py-3 rounded-full bg-gradient-to-r from-pink-200 to-rose-200 text-slate-700 font-semibold shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
-                <i class="fas fa-star mr-2 text-pink-400"></i>Semua
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 mb-12 relative z-10">
+        <!-- Filter Kategori -->
+        <div class="flex flex-wrap gap-3 sm:gap-4 justify-center mb-8">
+            <button onclick="filterPhotos('all', this)" 
+                    class="filter-btn active px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold shadow-lg transition-all bg-gradient-to-r from-pink-500 to-rose-500 text-white text-sm sm:text-base">
+                <i class="fas fa-star mr-2"></i> Semua Kenangan
             </button>
-            <button onclick="filterPhotos('cb')" class="filter-btn px-6 py-3 rounded-full bg-white/90 text-slate-600 font-semibold shadow-md hover:shadow-lg transition-all border-2 border-amber-100 hover:border-amber-200">
-                <i class="fas fa-user-graduate mr-2 text-amber-400"></i>Character Building
+            <button onclick="filterPhotos('cb', this)" 
+                    class="filter-btn px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold shadow-md transition-all bg-white text-amber-800 border-2 border-amber-200 text-sm sm:text-base hover:shadow-lg">
+                <i class="fas fa-users mr-2"></i> Character Building
             </button>
-            <button onclick="filterPhotos('ld')" class="filter-btn px-6 py-3 rounded-full bg-white/90 text-slate-600 font-semibold shadow-md hover:shadow-lg transition-all border-2 border-emerald-100 hover:border-emerald-200">
-                <i class="fas fa-flag mr-2 text-emerald-400"></i>Leadership Development
+            <button onclick="filterPhotos('ld', this)" 
+                    class="filter-btn px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold shadow-md transition-all bg-white text-emerald-800 border-2 border-emerald-200 text-sm sm:text-base hover:shadow-lg">
+                <i class="fas fa-flag mr-2"></i> Leadership Development
             </button>
-            <button onclick="filterPhotos('nb')" class="filter-btn px-6 py-3 rounded-full bg-white/90 text-slate-600 font-semibold shadow-md hover:shadow-lg transition-all border-2 border-blue-100 hover:border-blue-200">
-                <i class="fas fa-landmark mr-2 text-blue-400"></i>National Building
+            <button onclick="filterPhotos('nb', this)" 
+                    class="filter-btn px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold shadow-md transition-all bg-white text-blue-800 border-2 border-blue-200 text-sm sm:text-base hover:shadow-lg">
+                <i class="fas fa-landmark mr-2"></i> National Building
             </button>
         </div>
         
-        <div class="flex flex-wrap gap-3 justify-center mb-8">
-            <button onclick="filterByType('all')" class="type-filter-btn px-5 py-2 rounded-lg bg-slate-100/80 text-slate-600 font-medium hover:bg-slate-200/80 transition">
-                <i class="fas fa-layer-group mr-2"></i>Semua Media
+        <!-- Filter Tipe & Sort -->
+        <div class="flex flex-wrap gap-3 justify-center">
+            <button onclick="filterByType('all', this)" 
+                    class="type-btn active px-5 py-2.5 rounded-xl font-medium transition-all bg-pink-100 text-pink-800 hover:bg-pink-200 text-sm sm:text-base">
+                <i class="fas fa-layer-group mr-2"></i> Semua Media
             </button>
-            <button onclick="filterByType('image')" class="type-filter-btn px-5 py-2 rounded-lg bg-white/90 text-slate-600 font-medium shadow hover:bg-slate-100/90 transition border border-blue-50">
-                <i class="fas fa-camera mr-2 text-blue-400"></i>Foto
+            <button onclick="filterByType('image', this)" 
+                    class="type-btn px-5 py-2.5 rounded-xl font-medium transition-all bg-white text-slate-700 border-2 border-slate-300 hover:bg-slate-50 text-sm sm:text-base">
+                <i class="fas fa-camera mr-2"></i> Foto
             </button>
-            <button onclick="filterByType('video')" class="type-filter-btn px-5 py-2 rounded-lg bg-white/90 text-slate-600 font-medium shadow hover:bg-slate-100/90 transition border border-purple-50">
-                <i class="fas fa-video mr-2 text-purple-400"></i>Video
+            <button onclick="filterByType('video', this)" 
+                    class="type-btn px-5 py-2.5 rounded-xl font-medium transition-all bg-white text-slate-700 border-2 border-slate-300 hover:bg-slate-50 text-sm sm:text-base">
+                <i class="fas fa-video mr-2"></i> Video
             </button>
-            <button onclick="sortByLikes()" class="px-5 py-2 rounded-lg bg-gradient-to-r from-rose-200 to-pink-200 text-slate-700 font-medium shadow hover:shadow-lg transition">
-                <i class="fas fa-heart mr-2 text-rose-400"></i>Paling Banyak Disukai
+            <button onclick="sortByLikes()" 
+                    class="px-5 py-2.5 rounded-xl font-medium transition-all bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-md hover:shadow-lg transform hover:scale-105 text-sm sm:text-base">
+                <i class="fas fa-fire mr-2"></i> Paling Disukai
             </button>
         </div>
     </div>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-        <div id="loadingIndicator" class="text-center py-20">
-            <div class="heartbeat text-6xl text-pink-300 mb-4">
-                ❤️
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 pb-24 sm:pb-32 relative z-10">
+        <div id="loadingIndicator" class="text-center py-20 sm:py-32">
+            <div class="text-5xl sm:text-6xl text-pink-500 mb-6 animate-pulse">
+                <i class="fas fa-heart fa-beat"></i>
             </div>
-            <p class="text-slate-500 text-lg">Memuat kenangan penuh cinta...</p>
+            <div class="loading-dots justify-center mb-4">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <p class="text-pink-700 text-lg sm:text-xl font-medium">Memuat kenangan indah...</p>
         </div>
         
-        <div id="gallery" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        <div id="gallery" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"></div>
         
-        <div id="emptyState" class="hidden text-center py-20">
-            <div class="heartbeat text-8xl text-pink-200 mb-6">
-                ❤️
-            </div>
-            <h3 class="title-font text-3xl font-bold text-slate-600 mb-4">Belum Ada Kenangan</h3>
-            <p class="text-slate-500 text-lg mb-8">Mulai kenangan pertama dengan menekan tombol hati di bawah!</p>
-            <button onclick="openUploadModal()" class="bg-gradient-to-r from-pink-300 to-rose-300 text-slate-700 px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition transform hover:-translate-y-1">
-                <i class="fas fa-plus mr-2"></i>Tambah Kenangan Pertama
+        <div id="emptyState" class="hidden text-center py-20 sm:py-32">
+            <div class="text-8xl sm:text-9xl text-pink-300 mb-6 sm:mb-8 animate-pulse">💕</div>
+            <h3 class="title-font text-3xl sm:text-4xl font-bold text-pink-900 mb-4 sm:mb-6">Belum Ada Kenangan</h3>
+            <p class="text-pink-700 text-base sm:text-lg mb-8 sm:mb-10">Mari ciptakan momen pertama yang tak terlupakan</p>
+            <button onclick="openUploadModal()" 
+                    class="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-8 sm:px-10 py-4 sm:py-5 rounded-full font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl transition transform hover:scale-105">
+                <i class="fas fa-plus mr-2 sm:mr-3"></i> Tambah Kenangan Pertama
             </button>
         </div>
     </main>
 
-    <!-- Floating Action Button -->
-    <div class="fixed bottom-8 right-8 z-30">
-        <button onclick="openUploadModal()" class="heartbeat bg-gradient-to-r from-rose-300 to-pink-300 text-slate-700 p-5 rounded-full shadow-2xl hover:shadow-3xl transition-all hover:scale-110">
-            <i class="fas fa-heart text-2xl"></i>
+    <!-- Floating Button -->
+    <div class="fixed bottom-6 right-6 z-30">
+        <button onclick="openUploadModal()" 
+                class="floating-btn bg-gradient-to-r from-pink-600 to-rose-600 text-white p-4 sm:p-6 rounded-full shadow-2xl hover:shadow-pink-500/50 transition transform hover:scale-110">
+            <i class="fas fa-plus text-2xl sm:text-3xl"></i>
         </button>
     </div>
 
     <!-- Photo Modal -->
-    <div id="photoModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay" onclick="closeModal()">
-        <div class="bg-white/95 backdrop-blur-sm rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-auto" onclick="event.stopPropagation()">
+    <div id="photoModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay">
+        <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[95vh] overflow-y-auto shadow-2xl border border-pink-100" onclick="event.stopPropagation()">
             <div class="relative">
-                <button onclick="closeModal()" class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-lg hover:bg-white z-10">
-                    <i class="fas fa-times text-slate-600"></i>
+                <button onclick="closeModal()" class="absolute top-4 sm:top-6 right-4 sm:right-6 bg-white/90 rounded-full p-3 sm:p-4 shadow-lg hover:bg-white z-10 transition">
+                    <i class="fas fa-times text-xl sm:text-2xl text-pink-700"></i>
                 </button>
-                <div id="modalMediaContainer" class="relative"></div>
-                <div class="p-8">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 id="modalTitle" class="title-font text-3xl font-bold text-slate-700 mb-2"></h3>
-                            <p id="modalDate" class="text-slate-500 flex items-center">
-                                <i class="far fa-calendar mr-2"></i>
-                                <span id="dateText"></span>
+                <div id="modalMediaContainer" class="bg-gradient-to-b from-pink-50 to-rose-50 min-h-[300px] sm:min-h-[400px] flex items-center justify-center"></div>
+                <div class="p-6 sm:p-10">
+                    <div class="flex flex-col sm:flex-row justify-between items-start gap-4 sm:gap-0 mb-6 sm:mb-8">
+                        <div class="flex-1">
+                            <h3 id="modalTitle" class="title-font text-2xl sm:text-4xl font-bold text-pink-900 mb-2 sm:mb-3"></h3>
+                            <p id="modalDate" class="text-pink-700 flex items-center text-base sm:text-lg">
+                                <i class="far fa-calendar-alt mr-2 sm:mr-3"></i><span id="dateText"></span>
                             </p>
                         </div>
-                        <button onclick="toggleLove(currentPhotoId)" class="love-btn text-3xl text-slate-300 hover:text-rose-300">
+                        <button id="modalLoveBtn" onclick="toggleLove(currentPhotoId)" class="love-btn text-4xl sm:text-5xl">
                             <i class="far fa-heart"></i>
                         </button>
                     </div>
                     
-                    <div class="flex items-center gap-4 mb-6">
-                        <span id="modalCategory" class="px-4 py-2 rounded-full text-sm font-semibold"></span>
-                        <span id="modalLikes" class="flex items-center text-rose-400">
-                            <i class="fas fa-heart mr-2"></i>
-                            <span id="likeCount">0</span> Love
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6 mb-6 sm:mb-8">
+                        <span id="modalCategory" class="px-4 sm:px-6 py-2 sm:py-3 rounded-full text-sm sm:text-base font-bold inline-block w-fit"></span>
+                        <span id="modalLikes" class="flex items-center text-pink-700 font-bold text-lg sm:text-xl">
+                            <i class="fas fa-heart mr-2 sm:mr-3"></i><span id="likeCount" class="mr-1">0</span>  Love
                         </span>
                     </div>
                     
-                    <p id="modalDescription" class="text-slate-600 text-lg mb-8 leading-relaxed"></p>
+                    <p id="modalDescription" class="text-pink-800 text-base sm:text-lg leading-relaxed mb-8 sm:mb-10"></p>
                     
-                    <div class="flex gap-3">
-                        <button onclick="deletePhoto()" class="bg-rose-100 text-rose-500 px-6 py-3 rounded-lg font-semibold hover:bg-rose-200 transition flex items-center">
-                            <i class="fas fa-trash mr-2"></i>Hapus
+                    <div class="flex gap-4">
+                        <button onclick="deletePhoto()" class="bg-red-50 text-red-700 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold hover:bg-red-100 transition border-2 border-red-200">
+                            <i class="fas fa-trash mr-2"></i> Hapus Kenangan
                         </button>
                     </div>
                 </div>
@@ -261,41 +356,29 @@
     </div>
 
     <!-- Upload Modal -->
-    <div id="uploadModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay" onclick="closeUploadModal()">
-        <div class="bg-white/95 backdrop-blur-sm rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
-            <div class="p-8">
-                <div class="text-center mb-6">
-                    <div class="heartbeat text-4xl text-pink-300 mb-2">
-                        ❤️
-                    </div>
-                    <h3 class="title-font text-3xl font-bold text-slate-700">Tambah Kenangan Baru</h3>
-                    <p class="text-slate-500">Bagikan momen spesial penuh cinta</p>
+    <div id="uploadModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay">
+        <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-pink-100 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+            <div class="p-6 sm:p-10">
+                <div class="text-center mb-8 sm:mb-10">
+                    <div class="text-5xl sm:text-6xl mb-4 gradient-text">💖</div>
+                    <h3 class="title-font text-2xl sm:text-4xl font-bold text-pink-900">Tambah Kenangan Baru</h3>
+                    <p class="text-pink-700 mt-2 sm:mt-3 text-base sm:text-lg">Abadikan momen spesialmu selamanya</p>
                 </div>
                 
-                <form id="uploadForm" class="space-y-6">
+                <form id="uploadForm" class="space-y-4 sm:space-y-6">
                     <div>
-                        <label class="block text-slate-600 font-semibold mb-2">
-                            <i class="far fa-heart text-pink-300 mr-2"></i>Judul Kenangan
-                        </label>
-                        <input type="text" id="photoTitle" required 
-                               class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-pink-300 focus:border-transparent outline-none transition bg-white/80"
-                               placeholder="Judul kenangan spesial...">
+                        <label class="block text-pink-900 font-semibold mb-2 text-sm sm:text-base">Judul Kenangan</label>
+                        <input type="text" id="photoTitle" required class="w-full px-4 sm:px-5 py-3 sm:py-4 border-2 border-pink-200 rounded-xl focus:ring-4 focus:ring-pink-300 focus:border-pink-500 outline-none transition text-sm sm:text-base">
                     </div>
                     
                     <div>
-                        <label class="block text-slate-600 font-semibold mb-2">
-                            <i class="far fa-calendar text-blue-300 mr-2"></i>Tanggal
-                        </label>
-                        <input type="date" id="photoDate" required 
-                               class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-300 focus:border-transparent outline-none transition bg-white/80">
+                        <label class="block text-pink-900 font-semibold mb-2 text-sm sm:text-base">Tanggal</label>
+                        <input type="date" id="photoDate" required class="w-full px-4 sm:px-5 py-3 sm:py-4 border-2 border-pink-200 rounded-xl focus:ring-4 focus:ring-pink-300 focus:border-pink-500 outline-none text-sm sm:text-base">
                     </div>
                     
                     <div>
-                        <label class="block text-slate-600 font-semibold mb-2">
-                            <i class="fas fa-tag text-emerald-300 mr-2"></i>Kategori
-                        </label>
-                        <select id="photoCategory" 
-                                class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-300 focus:border-transparent outline-none transition bg-white/80">
+                        <label class="block text-pink-900 font-semibold mb-2 text-sm sm:text-base">Kategori</label>
+                        <select id="photoCategory" class="w-full px-4 sm:px-5 py-3 sm:py-4 border-2 border-pink-200 rounded-xl focus:ring-4 focus:ring-pink-300 focus:border-pink-500 outline-none text-sm sm:text-base">
                             <option value="cb">Character Building</option>
                             <option value="ld">Leadership Development</option>
                             <option value="nb">National Building</option>
@@ -303,49 +386,39 @@
                     </div>
                     
                     <div>
-                        <label class="block text-slate-600 font-semibold mb-2">
-                            <i class="far fa-comment text-purple-300 mr-2"></i>Deskripsi
-                        </label>
-                        <textarea id="photoDescription" rows="3" 
-                                  class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-purple-300 focus:border-transparent outline-none transition bg-white/80"
-                                  placeholder="Ceritakan kenangan indah ini..."></textarea>
+                        <label class="block text-pink-900 font-semibold mb-2 text-sm sm:text-base">Deskripsi (opsional)</label>
+                        <textarea id="photoDescription" rows="3" class="w-full px-4 sm:px-5 py-3 sm:py-4 border-2 border-pink-200 rounded-xl focus:ring-4 focus:ring-pink-300 focus:border-pink-500 outline-none text-sm sm:text-base"></textarea>
                     </div>
                     
                     <div>
-                        <label class="block text-slate-600 font-semibold mb-2">
-                            <i class="fas fa-cloud-upload-alt text-amber-300 mr-2"></i>Upload Foto / Video
-                        </label>
-                        <div class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:border-pink-300 transition bg-white/80"
-                             onclick="document.getElementById('photoFile').click()">
-                            <i class="fas fa-file-upload text-3xl text-slate-400 mb-3"></i>
-                            <p class="text-slate-500 mb-2">Klik untuk upload</p>
-                            <p class="text-sm text-slate-400">Format: JPG, PNG, GIF, MP4, MOV (Max: 10MB)</p>
+                        <label class="block text-pink-900 font-semibold mb-2 text-sm sm:text-base">Upload Foto / Video</label>
+                        <div class="border-4 border-dashed border-pink-300 rounded-2xl p-6 sm:p-10 text-center hover:border-pink-500 transition cursor-pointer" onclick="document.getElementById('photoFile').click()">
+                            <i class="fas fa-cloud-upload-alt text-4xl sm:text-5xl text-pink-400 mb-3 sm:mb-4"></i>
+                            <p class="text-pink-800 font-medium text-base sm:text-lg">Klik untuk memilih file</p>
+                            <p class="text-pink-600 text-xs sm:text-sm mt-2">JPG, PNG, MP4 • Maks 10MB</p>
                         </div>
-                        <input type="file" id="photoFile" accept="image/*,video/*" required 
-                               class="hidden" onchange="previewMedia(event)">
+                        <input type="file" id="photoFile" accept="image/*,video/*" required class="hidden" onchange="previewMedia(event)">
                         
-                        <div id="uploadProgress" class="hidden mt-4">
-                            <div class="flex justify-between text-sm text-slate-500 mb-2">
-                                <span>Mengunggah...</span>
-                                <span id="progressPercent">0%</span>
+                        <div id="uploadProgress" class="hidden mt-4 sm:mt-6">
+                            <div class="flex justify-between text-xs sm:text-sm mb-2 sm:mb-3">
+                                <span class="text-pink-800">Mengunggah...</span>
+                                <span id="progressPercent" class="text-pink-700">0%</span>
                             </div>
-                            <div class="w-full bg-slate-200 rounded-full h-2">
-                                <div id="progressBar" class="h-2 rounded-full bg-gradient-to-r from-blue-300 to-purple-300" style="width: 0%"></div>
+                            <div class="w-full bg-pink-200 rounded-full h-2 sm:h-3">
+                                <div id="progressBar" class="h-2 sm:h-3 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 transition-all" style="width: 0%"></div>
                             </div>
                         </div>
                         
-                        <div id="mediaPreview" class="mt-4 rounded-xl overflow-hidden border-2 border-slate-200 bg-white/80">
-                            <p class="text-slate-400 text-sm p-4 text-center">Preview akan muncul di sini</p>
+                        <div id="mediaPreview" class="mt-4 sm:mt-6 rounded-2xl overflow-hidden border-4 border-pink-200 bg-pink-50">
+                            <p class="text-pink-400 text-center py-12 sm:py-16 text-base sm:text-lg">Preview akan muncul di sini ♡</p>
                         </div>
                     </div>
                     
-                    <div class="flex gap-3 pt-4">
-                        <button type="button" id="submitBtn" 
-                                class="flex-1 bg-gradient-to-r from-pink-300 to-rose-300 text-slate-700 py-4 rounded-xl font-semibold hover:shadow-xl transition transform hover:-translate-y-1">
-                            <i class="fas fa-heart mr-2"></i>Simpan Kenangan
+                    <div class="flex flex-col sm:flex-row gap-4 sm:gap-6 pt-4 sm:pt-6">
+                        <button type="button" id="submitBtn" class="flex-1 bg-gradient-to-r from-pink-500 to-rose-500 text-white py-4 sm:py-5 rounded-xl font-bold text-base sm:text-lg shadow-lg hover:shadow-xl transition transform hover:scale-105">
+                            Simpan Kenangan
                         </button>
-                        <button type="button" onclick="closeUploadModal()" 
-                                class="flex-1 bg-slate-100/80 text-slate-600 py-4 rounded-xl font-semibold hover:bg-slate-200/80 transition">
+                        <button type="button" onclick="closeUploadModal()" class="flex-1 bg-gray-200 text-gray-800 py-4 sm:py-5 rounded-xl font-bold text-base sm:text-lg hover:bg-gray-300 transition">
                             Batal
                         </button>
                     </div>
@@ -354,563 +427,442 @@
         </div>
     </div>
 
-    <!-- Notification Toast -->
-    <div id="toast" class="hidden fixed bottom-24 right-8 bg-gradient-to-r from-emerald-200 to-green-200 text-slate-700 px-6 py-3 rounded-xl shadow-2xl z-40 transform transition-all duration-300 translate-x-full">
-        <div class="flex items-center gap-3">
-            <i class="fas fa-check-circle text-xl"></i>
-            <span id="toastMessage">Berhasil!</span>
-        </div>
+    <!-- Toast -->
+    <div id="toast" class="hidden fixed bottom-20 sm:bottom-24 left-1/2 -translate-x-1/2 bg-gradient-to-r from-pink-600 to-rose-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-2xl z-50 transition-all max-w-[90vw]">
+        <span id="toastMessage" class="font-medium text-sm sm:text-lg">Berhasil!</span>
     </div>
 
-    <script>
-        // Deklarasi variabel global
-        let photos = [];
-        let currentFilter = 'all';
-        let currentTypeFilter = 'all';
-        let currentPhotoId = null;
-        let lovedPhotos = new Set();
+<script>
+    let photos = [];
+    let currentFilter = 'all';
+    let currentTypeFilter = 'all';
+    let currentPhotoId = null;
+    let lovedPhotos = new Set();
 
-        // Supabase Configuration
-        const supabaseUrl = 'https://cgobihlfddgyhrlfmcew.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnb2JpaGxmZGRneWhybGZtY2V3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU3NjUwOTIsImV4cCI6MjA1MTM0MTA5Mn0.TVhJk4K_c4bZOxnQl6aZqQ4cH8a3Cj-5N7bQJyYJ7gk';
-        
-        // Inisialisasi Supabase client
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    const supabaseUrl = 'https://cgobihlfddgyhrlfmcew.supabase.co';
+    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnb2JpaGxmZGRneWhybGZtY2V3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMDM1MDIsImV4cCI6MjA4MjY3OTUwMn0.OiiCP11equ1AjyG5nayqTmfaJH3rg28UiaqG9QV1-Hs';
 
-        // Cloudinary Configuration
-        const cloudName = 'dxcconkoi';
-        const uploadPreset = 'galerikenangan';
-        
-        // Fungsi untuk menampilkan toast notifikasi
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toastMessage');
-            toastMessage.textContent = message;
-            toast.classList.remove('hidden', 'translate-x-full');
-            toast.classList.add('translate-x-0');
-            
-            setTimeout(() => {
-                toast.classList.add('translate-x-full');
-                setTimeout(() => toast.classList.add('hidden'), 300);
-            }, 3000);
-        }
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
-        // Buat floating hearts background
-        function createFloatingHearts() {
-            const container = document.getElementById('floatingHearts');
-            for (let i = 0; i < 15; i++) {
-                const heart = document.createElement('div');
-                heart.className = 'floating-heart';
-                heart.innerHTML = '❤️';
-                heart.style.left = `${Math.random() * 100}%`;
-                heart.style.animationDelay = `${Math.random() * 20}s`;
-                heart.style.fontSize = `${Math.random() * 20 + 16}px`;
-                container.appendChild(heart);
-            }
-        }
+    const cloudName = 'dxcconkoi';
+    const uploadPreset = 'galerikenangan';
 
-        // Fungsi untuk upload ke Cloudinary
-        async function uploadToCloudinary(file) {
-            return new Promise((resolve, reject) => {
-                const formData = new FormData();
-                formData.append('file', file);
-                formData.append('upload_preset', uploadPreset);
-                formData.append('cloud_name', cloudName);
-                
-                document.getElementById('uploadProgress').classList.remove('hidden');
-                
-                const xhr = new XMLHttpRequest();
-                
-                xhr.upload.addEventListener('progress', (e) => {
-                    if (e.lengthComputable) {
-                        const percent = Math.round((e.loaded / e.total) * 100);
-                        document.getElementById('progressBar').style.width = percent + '%';
-                        document.getElementById('progressPercent').textContent = percent + '%';
-                    }
-                });
-            
-                xhr.addEventListener('load', () => {
-                    document.getElementById('uploadProgress').classList.add('hidden');
-                    if (xhr.status === 200) {
-                        const response = JSON.parse(xhr.responseText);
-                        resolve(response.secure_url);
-                    } else {
-                        reject(new Error('Upload gagal'));
-                    }
-                });
-                
-                xhr.addEventListener('error', () => {
-                    document.getElementById('uploadProgress').classList.add('hidden');
-                    reject(new Error('Network error'));
-                });
-                
-                xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`);
-                xhr.send(formData);
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        document.getElementById('toastMessage').textContent = message;
+        toast.classList.remove('hidden', 'opacity-0');
+        toast.classList.add('opacity-100');
+        setTimeout(() => {
+            toast.classList.add('opacity-0');
+            setTimeout(() => toast.classList.add('hidden'), 300);
+        }, 3000);
+    }
+
+    async function uploadToCloudinary(file) {
+        return new Promise((resolve, reject) => {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', uploadPreset);
+
+            document.getElementById('uploadProgress').classList.remove('hidden');
+
+            const xhr = new XMLHttpRequest();
+            xhr.upload.addEventListener('progress', (e) => {
+                if (e.lengthComputable) {
+                    const percent = Math.round((e.loaded / e.total) * 100);
+                    document.getElementById('progressBar').style.width = percent + '%';
+                    document.getElementById('progressPercent').textContent = percent + '%';
+                }
             });
-        }
 
-        // Fungsi untuk menyimpan data ke Supabase
-        async function saveToSupabase() {
-            try {
-                // Hapus semua data lama
-                const { error: deleteError } = await supabase
-                    .from('memories')
-                    .delete()
-                    .neq('id', 0); // Hapus semua data
-                
-                if (deleteError) throw deleteError;
-                
-                // Simpan setiap foto ke Supabase
-                for (const photo of photos) {
-                    const { error } = await supabase
-                        .from('memories')
-                        .insert({
-                            title: photo.title,
-                            date: photo.date,
-                            category: photo.category,
-                            description: photo.description,
-                            media_url: photo.cloudinaryUrl,
-                            media_type: photo.type,
-                            likes: photo.likes || 0,
-                            color: photo.color,
-                            timestamp: photo.timestamp
-                        });
-                    
-                    if (error) throw error;
-                }
-                
-                // Update statistics
-                updateStatistics();
-                console.log('Data berhasil disimpan ke Supabase');
-                
-            } catch (error) {
-                console.error('Error saving to Supabase:', error);
-                showToast('⚠️ Gagal menyimpan ke database');
-            }
-        }
+            xhr.onload = () => {
+                document.getElementById('uploadProgress').classList.add('hidden');
+                if (xhr.status === 200) {
+                    const res = JSON.parse(xhr.responseText);
+                    resolve(res.secure_url);
+                } else reject(new Error('Upload gagal'));
+            };
 
-        // Fungsi untuk memuat data dari Supabase
-        async function loadFromSupabase() {
-            try {
-                const { data, error } = await supabase
-                    .from('memories')
-                    .select('*')
-                    .order('timestamp', { ascending: false });
-                
-                if (error) throw error;
-                
-                if (data && data.length > 0) {
-                    photos = data.map(item => ({
-                        id: item.id,
-                        title: item.title,
-                        date: item.date,
-                        category: item.category,
-                        description: item.description,
-                        image: item.media_url,
-                        cloudinaryUrl: item.media_url,
-                        type: item.media_type,
-                        color: item.color || 'yellow',
-                        likes: item.likes || 0,
-                        timestamp: item.timestamp
-                    }));
-                    
-                    return true;
-                }
-            } catch (error) {
-                console.error('Error loading from Supabase:', error);
-            }
+            xhr.onerror = () => {
+                document.getElementById('uploadProgress').classList.add('hidden');
+                reject(new Error('Network error'));
+            };
+
+            xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`);
+            xhr.send(formData);
+        });
+    }
+
+    async function loadFromSupabase() {
+        try {
+            const { data, error } = await supabaseClient
+                .from('memories')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            photos = data ? data.map(item => ({
+                id: item.id,
+                title: item.title || 'Tanpa Judul',
+                date: item.date || new Date().toLocaleDateString('id-ID'),
+                category: item.category || 'cb',
+                description: item.description || '',
+                image: item.media_url,
+                type: item.media_type || 'image',
+                likes: item.likes || 0,
+                timestamp: item.created_at
+            })) : [];
+
+            const saved = localStorage.getItem('lovedPhotos');
+            lovedPhotos = saved ? new Set(JSON.parse(saved)) : new Set();
+
+            return true;
+        } catch (err) {
+            console.error(err);
+            showToast('Gagal memuat data');
             return false;
         }
+    }
 
-        // Update statistics
-        function updateStatistics() {
-            const totalLikes = photos.reduce((sum, photo) => sum + (photo.likes || 0), 0);
-            const totalPhotos = photos.length;
-            
-            document.getElementById('totalLikes').textContent = totalLikes;
-            document.getElementById('totalPhotos').textContent = totalPhotos;
-        }
+    function updateStatistics() {
+        const totalLikes = photos.reduce((sum, p) => sum + (p.likes || 0), 0);
+        document.getElementById('totalLikes').textContent = totalLikes;
+        document.getElementById('totalPhotos').textContent = photos.length;
+    }
 
-        // Initialize app
-        async function initApp() {
-            createFloatingHearts();
-            
-            const loaded = await loadFromSupabase();
-            
-            if (loaded && photos.length > 0) {
-                photos.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-                renderGallery();
-                updateStatistics();
-                document.getElementById('loadingIndicator').classList.add('hidden');
-                document.getElementById('gallery').classList.remove('hidden');
-            } else {
-                photos = [];
-                document.getElementById('loadingIndicator').classList.add('hidden');
-                if (photos.length === 0) {
-                    document.getElementById('emptyState').classList.remove('hidden');
-                }
-            }
-            
-            // Setup event listener untuk form upload
-            document.getElementById('submitBtn').addEventListener('click', addPhoto);
-        }
+    async function initApp() {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('photoDate').value = today;
 
-        // Render gallery
-        function renderGallery() {
-            const gallery = document.getElementById('gallery');
-            const emptyState = document.getElementById('emptyState');
-            
-            let filtered = currentFilter === 'all' 
-                ? photos 
-                : photos.filter(p => p.category === currentFilter);
-            
-            if (currentTypeFilter !== 'all') {
-                filtered = filtered.filter(p => p.type === currentTypeFilter);
-            }
-            
-            if (filtered.length === 0) {
-                gallery.innerHTML = '';
-                gallery.classList.add('hidden');
-                emptyState.classList.remove('hidden');
-                return;
-            }
-
-            gallery.classList.remove('hidden');
-            emptyState.classList.add('hidden');
-            
-            gallery.innerHTML = filtered.map(photo => {
-                const isLoved = lovedPhotos.has(photo.id);
-                const colorClass = photo.category === 'cb' ? 'cb-bg cb-text' 
-                    : photo.category === 'ld' ? 'ld-bg ld-text' 
-                    : 'nb-bg nb-text';
-                
-                const categoryName = {
-                    'cb': 'Character Building',
-                    'ld': 'Leadership Development',
-                    'nb': 'National Building'
-                }[photo.category];
-                
-                const typeIcon = photo.type === 'video' 
-                    ? '<i class="fas fa-play-circle"></i>' 
-                    : '<i class="fas fa-camera"></i>';
-                
-                return `
-                    <div class="photo-card group cursor-pointer" onclick="openModal('${photo.id}')">
-                        <div class="relative overflow-hidden h-64">
-                            ${photo.type === 'video' ? `
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10"></div>
-                                <video src="${photo.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"></video>
-                                <div class="absolute bottom-4 left-4 text-white text-sm z-20 flex items-center">
-                                    ${typeIcon} <span class="ml-2">Video</span>
-                                </div>
-                            ` : `
-                                <img src="${photo.image}" alt="${photo.title}" 
-                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                                <div class="absolute bottom-4 left-4 text-white text-sm z-20 flex items-center">
-                                    ${typeIcon} <span class="ml-2">Foto</span>
-                                </div>
-                            `}
-                            
-                            <div class="category-badge ${colorClass} px-4 py-1.5 rounded-full text-sm font-semibold shadow-lg">
-                                ${categoryName}
-                            </div>
-                            
-                            <div class="absolute bottom-4 right-4 z-20 flex items-center space-x-2">
-                                <button onclick="event.stopPropagation(); toggleLove('${photo.id}')" 
-                                        class="love-btn ${isLoved ? 'loved' : ''} text-white text-xl">
-                                    <i class="${isLoved ? 'fas' : 'far'} fa-heart"></i>
-                                </button>
-                                <span class="text-white font-semibold">${photo.likes || 0}</span>
-                            </div>
-                        </div>
-                        
-                        <div class="p-6">
-                            <h3 class="title-font text-2xl font-bold text-slate-700 mb-2">${photo.title}</h3>
-                            <p class="text-slate-500 text-sm mb-3 flex items-center">
-                                <i class="far fa-calendar mr-2"></i>${photo.date}
-                            </p>
-                            <p class="text-slate-600 line-clamp-2">${photo.description || 'Tidak ada deskripsi'}</p>
-                            <button onclick="event.stopPropagation(); openModal('${photo.id}')" 
-                                    class="mt-4 text-blue-400 hover:text-blue-500 font-semibold flex items-center">
-                                Lihat Detail <i class="fas fa-arrow-right ml-2"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // Filter functions
-        function filterPhotos(category) {
-            currentFilter = category;
+        const loaded = await loadFromSupabase();
+        if (loaded) {
             renderGallery();
-            
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('from-pink-200', 'to-rose-200', 'text-slate-700');
-                btn.classList.add('bg-white/90', 'text-slate-600');
-            });
-            event.target.classList.remove('bg-white/90', 'text-slate-600');
-            event.target.classList.add('from-pink-200', 'to-rose-200', 'text-slate-700');
+            updateStatistics();
+            document.getElementById('loadingIndicator').classList.add('hidden');
+            document.getElementById(photos.length > 0 ? 'gallery' : 'emptyState').classList.remove('hidden');
+            document.getElementById(photos.length > 0 ? 'emptyState' : 'gallery').classList.add('hidden');
         }
 
-        function filterByType(type) {
-            currentTypeFilter = type;
-            renderGallery();
-            
-            document.querySelectorAll('.type-filter-btn').forEach(btn => {
-                btn.classList.remove('bg-slate-200/80');
-                btn.classList.add('bg-white/90');
-            });
-            event.target.classList.remove('bg-white/90');
-            event.target.classList.add('bg-slate-200/80');
+        document.getElementById('submitBtn').addEventListener('click', addPhoto);
+        document.getElementById('photoModal').addEventListener('click', (e) => e.target === e.currentTarget && closeModal());
+        document.getElementById('uploadModal').addEventListener('click', (e) => e.target === e.currentTarget && closeUploadModal());
+    }
+
+    function filterPhotos(category, button) {
+        currentFilter = category;
+        renderGallery();
+
+        // Reset semua tombol kategori
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active', 'cat-cb-active', 'cat-ld-active', 'cat-nb-active', 'from-pink-500', 'to-rose-500', 'text-white');
+            btn.classList.remove('bg-gradient-to-r');
+            btn.classList.add('bg-white');
+            if (btn.textContent.includes('Character')) btn.classList.add('text-amber-800', 'border-amber-200');
+            if (btn.textContent.includes('Leadership')) btn.classList.add('text-emerald-800', 'border-emerald-200');
+            if (btn.textContent.includes('National')) btn.classList.add('text-blue-800', 'border-blue-200');
+        });
+
+        // Aktifkan tombol yang diklik
+        if (category === 'all') {
+            button.classList.remove('bg-white');
+            button.classList.add('bg-gradient-to-r', 'from-pink-500', 'to-rose-500', 'text-white', 'active');
+        } else if (category === 'cb') {
+            button.classList.add('cat-cb-active', 'active');
+            button.classList.remove('bg-white', 'text-amber-800', 'border-amber-200');
+        } else if (category === 'ld') {
+            button.classList.add('cat-ld-active', 'active');
+            button.classList.remove('bg-white', 'text-emerald-800', 'border-emerald-200');
+        } else if (category === 'nb') {
+            button.classList.add('cat-nb-active', 'active');
+            button.classList.remove('bg-white', 'text-blue-800', 'border-blue-200');
+        }
+    }
+
+    function filterByType(type, button) {
+        currentTypeFilter = type;
+        renderGallery();
+
+        // Reset semua type button
+        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+        // Aktifkan yang dipilih
+        button.classList.add('active');
+    }
+
+    function renderGallery() {
+        let filtered = currentFilter === 'all' ? photos : photos.filter(p => p.category === currentFilter);
+        if (currentTypeFilter !== 'all') filtered = filtered.filter(p => p.type === currentTypeFilter);
+
+        const gallery = document.getElementById('gallery');
+        if (filtered.length === 0) {
+            gallery.classList.add('hidden');
+            document.getElementById('emptyState').classList.remove('hidden');
+            return;
         }
 
-        function sortByLikes() {
-            photos.sort((a, b) => (b.likes || 0) - (a.likes || 0));
-            renderGallery();
-            showToast('Diurutkan berdasarkan love terbanyak!');
-        }
+        gallery.classList.remove('hidden');
+        document.getElementById('emptyState').classList.add('hidden');
 
-        // Toggle love
-        async function toggleLove(photoId) {
-            event.stopPropagation();
-            const photo = photos.find(p => p.id === photoId);
-            if (!photo) return;
-            
-            if (lovedPhotos.has(photoId)) {
-                lovedPhotos.delete(photoId);
-                photo.likes = Math.max(0, (photo.likes || 0) - 1);
-            } else {
-                lovedPhotos.add(photoId);
-                photo.likes = (photo.likes || 0) + 1;
-            }
-            
-            // Save to Supabase
-            try {
-                const { error } = await supabase
-                    .from('memories')
-                    .update({ likes: photo.likes })
-                    .eq('id', photoId);
-                
-                if (error) throw error;
-                
-                saveToSupabase();
-                renderGallery();
-                
-                // Update modal if open
-                if (currentPhotoId === photoId) {
-                    updateModalLikes();
-                }
-                
-                showToast(lovedPhotos.has(photoId) ? '❤️ Ditambahkan ke favorit!' : '💔 Dihapus dari favorit');
-                
-            } catch (error) {
-                console.error('Error updating likes:', error);
-                showToast('⚠️ Gagal menyimpan perubahan like');
-            }
-        }
-
-        // Modal functions
-        function openModal(id) {
-            const photo = photos.find(p => p.id === id);
-            if (!photo) return;
-            
-            currentPhotoId = id;
-            
-            const mediaContainer = document.getElementById('modalMediaContainer');
-            if (photo.type === 'video') {
-                mediaContainer.innerHTML = `
-                    <div class="relative">
-                        <video src="${photo.image}" controls class="w-full h-[400px] object-cover rounded-t-3xl"></video>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-t-3xl"></div>
-                    </div>
-                `;
-            } else {
-                mediaContainer.innerHTML = `
-                    <div class="relative">
-                        <img src="${photo.image}" alt="${photo.title}" class="w-full h-[400px] object-cover rounded-t-3xl">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-t-3xl"></div>
-                    </div>
-                `;
-            }
-            
-            document.getElementById('modalTitle').textContent = photo.title;
-            document.getElementById('dateText').textContent = photo.date;
-            document.getElementById('modalDescription').textContent = photo.description || 'Tidak ada deskripsi';
-            
-            const categoryBadge = document.getElementById('modalCategory');
-            categoryBadge.textContent = {
-                'cb': 'Character Building',
-                'ld': 'Leadership Development',
-                'nb': 'National Building'
+        gallery.innerHTML = filtered.map(photo => {
+            const isLoved = lovedPhotos.has(photo.id);
+            const catClass = photo.category === 'cb' ? 'cat-cb' : photo.category === 'ld' ? 'cat-ld' : 'cat-nb';
+            const categoryName = { 
+                cb: 'Character Building', 
+                ld: 'Leadership Development', 
+                nb: 'National Building' 
             }[photo.category];
             
-            const badgeClass = photo.category === 'cb' ? 'cb-bg cb-text' :
-                              photo.category === 'ld' ? 'ld-bg ld-text' :
-                              'nb-bg nb-text';
-            categoryBadge.className = `px-4 py-2 rounded-full text-sm font-semibold ${badgeClass}`;
-            
-            // Update love button in modal
-            const loveBtn = document.querySelector('#photoModal .love-btn');
-            const isLoved = lovedPhotos.has(id);
-            loveBtn.innerHTML = `<i class="${isLoved ? 'fas' : 'far'} fa-heart"></i>`;
-            loveBtn.className = `love-btn text-3xl ${isLoved ? 'loved text-rose-400' : 'text-slate-300 hover:text-rose-300'}`;
-            
-            updateModalLikes();
-            
-            document.getElementById('photoModal').classList.remove('hidden');
+            const catIcon = {
+                cb: '<i class="fas fa-users mr-2"></i>',
+                ld: '<i class="fas fa-flag mr-2"></i>',
+                nb: '<i class="fas fa-landmark mr-2"></i>'
+            }[photo.category];
+
+            return `
+                <div class="photo-card">
+                    <div class="relative overflow-hidden aspect-video rounded-t-2xl" onclick="openModal(${photo.id})">
+                        ${photo.type === 'video' ? `
+                            <video src="${photo.image}" class="w-full h-full object-cover card-image" muted loop playsinline></video>
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                            <div class="absolute bottom-4 left-4 text-white flex items-center text-base font-medium">
+                                <i class="fas fa-play-circle mr-2 text-xl"></i> Video
+                            </div>
+                        ` : `
+                            <img src="${photo.image}" alt="${photo.title}" class="w-full h-full object-cover card-image">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                        `}
+                        <div class="absolute top-4 right-4 px-4 py-2 rounded-full text-xs font-bold ${catClass}">
+                            ${catIcon}${categoryName}
+                        </div>
+                        <div class="absolute bottom-4 right-4 flex items-center gap-2">
+                            <button onclick="event.stopPropagation(); toggleLove(${photo.id})" class="love-btn text-2xl sm:text-3xl drop-shadow-lg ${isLoved ? 'loved' : 'text-white'}">
+                                <i class="${isLoved ? 'fas' : 'far'} fa-heart"></i>
+                            </button>
+                            <span class="text-white font-bold text-lg drop-shadow">${photo.likes || 0}</span>
+                        </div>
+                    </div>
+                    <div class="p-5 sm:p-6 flex flex-col flex-grow">
+                        <h3 class="title-font text-xl font-bold text-pink-900 mb-2 line-clamp-2" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${photo.title}</h3>
+                        <p class="text-pink-700 flex items-center mb-3 text-sm">
+                            <i class="far fa-calendar-alt mr-2"></i>${photo.date}
+                        </p>
+                        <p class="text-pink-800 line-clamp-3 mb-4 flex-grow text-sm" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${photo.description || 'Tanpa deskripsi'}</p>
+                        <button onclick="openModal(${photo.id})" class="text-pink-600 font-bold hover:text-pink-700 flex items-center text-sm sm:text-base w-fit">
+                            Lihat Detail <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function sortByLikes() {
+        photos.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+        renderGallery();
+        showToast('Diurutkan berdasarkan love terbanyak ❤️');
+    }
+
+    async function toggleLove(photoId) {
+        if (event) event.stopPropagation();
+        photoId = parseInt(photoId);
+        if (isNaN(photoId)) return;
+
+        const photo = photos.find(p => p.id === photoId);
+        if (!photo) return;
+
+        if (lovedPhotos.has(photoId)) {
+            lovedPhotos.delete(photoId);
+            photo.likes = Math.max(0, photo.likes - 1);
+        } else {
+            lovedPhotos.add(photoId);
+            photo.likes += 1;
         }
 
-        function updateModalLikes() {
-            const photo = photos.find(p => p.id === currentPhotoId);
-            if (photo) {
-                document.getElementById('likeCount').textContent = photo.likes || 0;
-            }
+        localStorage.setItem('lovedPhotos', JSON.stringify([...lovedPhotos]));
+
+        try {
+            const { error } = await supabaseClient
+                .from('memories')
+                .update({ likes: photo.likes })
+                .eq('id', photoId);
+
+            if (error) throw error;
+
+            renderGallery();
+            updateStatistics();
+            if (currentPhotoId === photoId) updateModalLikes();
+            showToast(lovedPhotos.has(photoId) ? '❤️ Ditambahkan ke favorit' : '💔 Dihapus dari favorit');
+        } catch (err) {
+            showToast('Gagal update like');
+        }
+    }
+
+    function openModal(id) {
+        const photoId = parseInt(id);
+        if (isNaN(photoId)) return;
+
+        const photo = photos.find(p => p.id === photoId);
+        if (!photo) return;
+
+        currentPhotoId = photoId;
+
+        const container = document.getElementById('modalMediaContainer');
+        container.innerHTML = photo.type === 'video'
+            ? `<video src="${photo.image}" controls autoplay class="w-full h-full max-h-[400px] object-contain"></video>`
+            : `<img src="${photo.image}" alt="${photo.title}" class="w-full h-full max-h-[400px] object-contain">`;
+
+        document.getElementById('modalTitle').textContent = photo.title;
+        document.getElementById('dateText').textContent = photo.date;
+        document.getElementById('modalDescription').textContent = photo.description || 'Tidak ada deskripsi';
+
+        const badge = document.getElementById('modalCategory');
+        const catClass = photo.category === 'cb' ? 'cat-cb' : photo.category === 'ld' ? 'cat-ld' : 'cat-nb';
+        const catIcon = photo.category === 'cb' ? '<i class="fas fa-users mr-2"></i>' : 
+                       photo.category === 'ld' ? '<i class="fas fa-flag mr-2"></i>' : 
+                       '<i class="fas fa-landmark mr-2"></i>';
+        badge.innerHTML = `${catIcon}${photo.category === 'cb' ? 'Character Building' : photo.category === 'ld' ? 'Leadership Development' : 'National Building'}`;
+        badge.className = `px-4 py-2 rounded-full text-sm font-bold ${catClass}`;
+
+        const loveBtn = document.getElementById('modalLoveBtn');
+        const loved = lovedPhotos.has(photoId);
+        loveBtn.innerHTML = `<i class="${loved ? 'fas' : 'far'} fa-heart"></i>`;
+        loveBtn.className = `love-btn text-4xl sm:text-5xl ${loved ? 'loved' : ''}`;
+
+        updateModalLikes();
+        document.getElementById('photoModal').classList.remove('hidden');
+    }
+
+    function updateModalLikes() {
+        const photo = photos.find(p => p.id === currentPhotoId);
+        if (photo) document.getElementById('likeCount').textContent = photo.likes || 0;
+    }
+
+    function closeModal() {
+        document.getElementById('photoModal').classList.add('hidden');
+        document.querySelectorAll('#modalMediaContainer video').forEach(v => v.pause());
+        currentPhotoId = null;
+    }
+
+    function openUploadModal() {
+        document.getElementById('uploadModal').classList.remove('hidden');
+        document.getElementById('photoDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('mediaPreview').innerHTML = '<p class="text-pink-400 text-center py-12 sm:py-16 text-base sm:text-lg">Preview akan muncul di sini ♡</p>';
+    }
+
+    function closeUploadModal() {
+        document.getElementById('uploadModal').classList.add('hidden');
+        document.getElementById('uploadForm').reset();
+        document.getElementById('photoDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('mediaPreview').innerHTML = '<p class="text-pink-400 text-center py-12 sm:py-16 text-base sm:text-lg">Preview akan muncul di sini ♡</p>';
+        document.getElementById('uploadProgress').classList.add('hidden');
+    }
+
+    function previewMedia(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        if (file.size > 10 * 1024 * 1024) {
+            alert('Ukuran maksimal 10MB');
+            event.target.value = '';
+            return;
         }
 
-        function closeModal() {
-            document.getElementById('photoModal').classList.add('hidden');
-            const videoElements = document.querySelectorAll('#modalMediaContainer video');
-            videoElements.forEach(v => v.pause());
-            currentPhotoId = null;
-        }
+        const reader = new FileReader();
+        reader.onload = e => {
+            const tag = file.type.startsWith('video/') 
+                ? `<video src="${e.target.result}" controls class="w-full h-full max-h-[300px] object-contain rounded-lg"></video>`
+                : `<img src="${e.target.result}" class="w-full h-full max-h-[300px] object-contain rounded-lg">`;
+            document.getElementById('mediaPreview').innerHTML = tag;
+        };
+        reader.readAsDataURL(file);
+    }
 
-        function openUploadModal() {
-            document.getElementById('uploadModal').classList.remove('hidden');
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('photoDate').value = today;
-            document.getElementById('uploadProgress').classList.add('hidden');
-        }
+    async function addPhoto() {
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengunggah...';
 
-        function closeUploadModal() {
-            document.getElementById('uploadModal').classList.add('hidden');
-            document.getElementById('mediaPreview').innerHTML = '<p class="text-slate-400 text-sm p-4 text-center">Preview akan muncul di sini</p>';
-            document.getElementById('uploadProgress').classList.add('hidden');
-            document.getElementById('uploadForm').reset();
-        }
+        try {
+            const file = document.getElementById('photoFile').files[0];
+            if (!file) throw new Error('Pilih file');
 
-        function previewMedia(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            if (file.size > 10 * 1024 * 1024) {
-                alert('Ukuran file terlalu besar! Maksimal 10MB');
-                event.target.value = '';
-                document.getElementById('mediaPreview').innerHTML = '<p class="text-slate-400 text-sm p-4 text-center">Preview akan muncul di sini</p>';
-                return;
-            }
+            const url = await uploadToCloudinary(file);
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const isVideo = file.type.startsWith('video/');
-                if (isVideo) {
-                    document.getElementById('mediaPreview').innerHTML = 
-                        `<video src="${e.target.result}" controls class="w-full h-48 object-cover"></video>`;
-                } else {
-                    document.getElementById('mediaPreview').innerHTML = 
-                        `<img src="${e.target.result}" class="w-full h-48 object-cover" alt="Preview">`;
-                }
-            };
-            reader.readAsDataURL(file);
-        }
+            const title = document.getElementById('photoTitle').value.trim();
+            const dateVal = document.getElementById('photoDate').value;
+            if (!title || !dateVal) throw new Error('Lengkapi data');
 
-        // Add photo
-        async function addPhoto(e) {
-            e.preventDefault();
-            
-            const submitBtn = document.getElementById('submitBtn');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Mengunggah...';
-            submitBtn.disabled = true;
-            
-            try {
-                const file = document.getElementById('photoFile').files[0];
-                if (!file) {
-                    alert('Silakan pilih foto atau video terlebih dahulu');
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
-                    return;
-                }
+            const dateObj = new Date(dateVal);
+            const formattedDate = dateObj.toLocaleDateString('id-ID', { 
+                day: 'numeric', 
+                month: 'long', 
+                year: 'numeric' 
+            });
 
-                const cloudinaryUrl = await uploadToCloudinary(file);
-                
-                const colors = ['yellow', 'red', 'blue'];
-                const isVideo = file.type.startsWith('video/');
-                
-                const dateValue = document.getElementById('photoDate').value;
-                const dateObj = new Date(dateValue);
-                
-                const newPhoto = {
-                    id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-                    title: document.getElementById('photoTitle').value,
-                    date: dateObj.toLocaleDateString('id-ID', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric'
-                    }),
+            const { data, error } = await supabaseClient
+                .from('memories')
+                .insert({
+                    title,
+                    date: formattedDate,
                     category: document.getElementById('photoCategory').value,
-                    description: document.getElementById('photoDescription').value || '',
-                    image: cloudinaryUrl,
-                    cloudinaryUrl: cloudinaryUrl,
-                    type: isVideo ? 'video' : 'image',
-                    color: colors[Math.floor(Math.random() * colors.length)],
-                    likes: 0,
-                    timestamp: Date.now()
-                };
-                
-                photos.unshift(newPhoto);
-                
-                // Save to Supabase
-                await saveToSupabase();
-                
-                renderGallery();
-                closeUploadModal();
-                showToast('❤️ Kenangan berhasil disimpan!');
-                
-            } catch (error) {
-                console.error('Error uploading:', error);
-                showToast('❌ Gagal mengunggah media. Silakan coba lagi.');
-            } finally {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            }
-        }
+                    description: document.getElementById('photoDescription').value,
+                    media_url: url,
+                    media_type: file.type.startsWith('video/') ? 'video' : 'image',
+                    likes: 0
+                })
+                .select();
 
-        async function deletePhoto() {
-            if (!currentPhotoId) return;
-            
-            if (confirm('Apakah Anda yakin ingin menghapus kenangan ini?')) {
-                try {
-                    const photo = photos.find(p => p.id === currentPhotoId);
-                    
-                    // Hapus dari Supabase
-                    const { error } = await supabase
-                        .from('memories')
-                        .delete()
-                        .eq('id', currentPhotoId);
-                    
-                    if (error) throw error;
-                    
-                    // Hapus dari array lokal
-                    photos = photos.filter(p => p.id !== currentPhotoId);
-                    lovedPhotos.delete(currentPhotoId);
-                    
-                    // Simpan perubahan ke Supabase
-                    await saveToSupabase();
-                    
-                    closeModal();
-                    renderGallery();
-                    showToast('Kenangan berhasil dihapus');
-                    
-                } catch (error) {
-                    console.error('Error deleting:', error);
-                    showToast('❌ Gagal menghapus kenangan');
-                }
-            }
-        }
+            if (error) throw error;
 
-        // Initialize app when page loads
-        window.addEventListener('DOMContentLoaded', initApp);
-    </script>
+            photos.unshift({
+                id: data[0].id,
+                title: data[0].title,
+                date: data[0].date,
+                category: data[0].category,
+                description: data[0].description || '',
+                image: data[0].media_url,
+                type: data[0].media_type,
+                likes: 0,
+                timestamp: data[0].created_at
+            });
+
+            renderGallery();
+            updateStatistics();
+            closeUploadModal();
+            showToast('Kenangan berhasil disimpan ❤️');
+        } catch (err) {
+            showToast('Gagal: ' + (err.message || 'Coba lagi'));
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = 'Simpan Kenangan';
+        }
+    }
+
+    async function deletePhoto() {
+        if (!currentPhotoId || !confirm('Yakin ingin menghapus kenangan ini?')) return;
+
+        try {
+            const { error } = await supabaseClient
+                .from('memories')
+                .delete()
+                .eq('id', currentPhotoId);
+
+            if (error) throw error;
+
+            photos = photos.filter(p => p.id !== currentPhotoId);
+            lovedPhotos.delete(currentPhotoId);
+            localStorage.setItem('lovedPhotos', JSON.stringify([...lovedPhotos]));
+
+            closeModal();
+            renderGallery();
+            updateStatistics();
+            showToast('Kenangan telah dihapus');
+        } catch (err) {
+            showToast('Gagal menghapus');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', initApp);
+    document.addEventListener('keydown', e => e.key === 'Escape' && (closeModal(), closeUploadModal()));
+</script>
 </body>
 </html>
