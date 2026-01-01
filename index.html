@@ -760,8 +760,8 @@
     function previewMedia(event) {
         const file = event.target.files[0];
         if (!file) return;
-        if (file.size > 10 * 1024 * 1024) {
-            alert('Ukuran maksimal 10MB');
+        if (file.size > 50 * 1024 * 1024) {
+            alert('Ukuran maksimal 50MB');
             event.target.value = '';
             return;
         }
