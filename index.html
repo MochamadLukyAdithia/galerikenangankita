@@ -395,7 +395,7 @@
                         <div class="border-4 border-dashed border-pink-300 rounded-2xl p-6 sm:p-10 text-center hover:border-pink-500 transition cursor-pointer" onclick="document.getElementById('photoFile').click()">
                             <i class="fas fa-cloud-upload-alt text-4xl sm:text-5xl text-pink-400 mb-3 sm:mb-4"></i>
                             <p class="text-pink-800 font-medium text-base sm:text-lg">Klik untuk memilih file</p>
-                            <p class="text-pink-600 text-xs sm:text-sm mt-2">Maks 50MB</p>
+                            <p class="text-pink-600 text-xs sm:text-sm mt-2">Maks 200MB</p>
                         </div>
                         <input type="file" id="photoFile" accept="image/*,video/*" required class="hidden" onchange="previewMedia(event)">
                         
@@ -762,8 +762,8 @@
     function previewMedia(event) {
         const file = event.target.files[0];
         if (!file) return;
-        if (file.size > 50 * 1024 * 1024) {
-            alert('Ukuran maksimal 50MB');
+        if (file.size > 200 * 1024 * 1024) {
+            alert('Ukuran maksimal 200MB');
             event.target.value = '';
             return;
         }
